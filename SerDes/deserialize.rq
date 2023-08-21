@@ -1,0 +1,22 @@
+PREFIX f: <java:eu.essentialcomplexity.sparql.pfunction.>
+PREFIX tree: <https://w3id.org/tree#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT {
+    ?s ?p ?o .
+    ?bn_s ?bn_p ?bn_o .
+}
+WHERE {
+    ?collection a tree:Collection .
+    ?collection tree:member ?member .
+    ?member tree:hasSubject ?s .
+    ?member tree:memberObject ?stub_s .
+    ?stub_s ?p ?o .
+    OPTIONAL {
+        ?stub_s f:bnodeDescendants ?bn_s .
+        ?bn_s ?bn_p ?bn_o .
+    }
+}

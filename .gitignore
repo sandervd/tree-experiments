@@ -1,0 +1,5 @@
+.project
+apache-jena*
+deserialize.ttl
+serialize.ttl
+

@@ -1,0 +1,33 @@
+PREFIX f: <java:eu.essentialcomplexity.sparql.pfunction.>
+PREFIX tree: <https://w3id.org/tree#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT {
+    ?tree_collection a tree:Collection .
+    ?tree_collection tree:member ?tree_member .
+    ?tree_member tree:hasSubject ?tree_member_uri .
+    ?tree_member tree:memberObject ?tree_member_object .
+    ?tree_member_object ?p ?o .
+    ?bn_s ?bn_p ?bn_o .
+}
+WHERE {
+    { BIND(BNODE() AS ?tree_collection) .}
+    {
+        SELECT DISTINCT ?tree_member_uri
+        WHERE {
+            ?tree_member_uri ?x ?y
+            FILTER (!isBlank(?tree_member_uri))
+        }
+    }
+    BIND(BNODE(STR(?tree_member_uri)) AS ?tree_member)
+    BIND(BNODE(STR(?tree_member_uri)) AS ?tree_member_object)
+    ?tree_member_uri ?p ?o .
+    
+    OPTIONAL {
+        ?tree_member_uri f:bnodeDescendants ?bn_s .
+        ?bn_s ?bn_p ?bn_o .
+    }
+}
